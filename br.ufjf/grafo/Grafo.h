@@ -14,23 +14,26 @@ class Grafo {
 
 private:
     Vertice* inicio;
-    int tamanho;
+    int ordem;
+    int grauGrafo;
+    int numArestas;
     void lerArquivo(string nomeArquivoEntrada);
 
 public:
     Grafo(string nomeArquivoEntrada);
-    void addVertice(int vertice1, int vertice2, int peso);
-
     Vertice *getInicio() const;
-
     void setInicio(Vertice *inicio);
-
-    int getTamanho() const;
-
-    void setTamanho(int tamanho);
-
+    int getOrdem() const;
+    int getGrau();
+    void setOrdem(int ordem);
     void salvarArquivo();
 
+    void inicializaGrafo(int ordem);
+    void addVertice(int vertice1, int vertice2, int peso);
+    Vertice* addVertice(int vertice1);
+    Vertice* encontraVertice(int vertice);
+
+    int getGrau(int vertice);
 };
 
 

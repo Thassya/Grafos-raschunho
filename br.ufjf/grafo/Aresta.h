@@ -15,32 +15,19 @@ class Aresta {
 
 private:
     int peso;
-    int nomeVertice;
-    Vertice *destino;
-    Vertice *origem;
+    int destino;
+    int origem;
     Aresta *vizinho;
 
 public:
-
-    int getPeso() const;
-
-    void setPeso(int peso);
-
-    int getNomeVertice() const;
-
-    void setNomeVertice(int nomeVertice);
-
-    Vertice *getDestino() const;
-
-    void setDestino(Vertice *destino);
-
-    Vertice *getOrigem() const;
-
-    void setOrigem(Vertice *origem);
-
-    Aresta *getVizinho() const;
-
-    void setVizinho(Aresta *vizinho);
+    Aresta();
+    Aresta(int origem, int destino, int peso);
+    const int getPeso() { return peso; };
+    const int getDestino() { return destino; };
+    const int getOrigem() { return origem; }
+    Aresta* getVizinho();
+    void setAresta(Aresta *a);
+    ~Aresta();
 
 };
 

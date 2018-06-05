@@ -1,12 +1,11 @@
-//
-// Created by rodolpho on 18/05/18.
-//
 
 #include <clocale>
 #include "Grafo.h"
 #include <fstream>
-#include <iostream>
 #include <cstring>
+
+using namespace std;
+
 
 Grafo::Grafo(string nomeArquivoEntrada){//popula o grafo com o numero de arestas apresentado no arquivo
     lerArquivo(nomeArquivoEntrada);
@@ -15,7 +14,7 @@ Grafo::Grafo(string nomeArquivoEntrada){//popula o grafo com o numero de arestas
 
 void Grafo::lerArquivo(string nomeArquivoEntrada) {
 
-    int grauGrafo,v1,v2,p;
+    int ordemGrafo,v1,v2,p;
 
     ifstream file(nomeArquivoEntrada);
     char * url = new char [nomeArquivoEntrada.length()+1];
@@ -28,26 +27,9 @@ void Grafo::lerArquivo(string nomeArquivoEntrada) {
         printf("Erro, nao foi possivel abrir o arquivo\n");
     else
 
-        fscanf(arq,"%d", &grauGrafo);
-        this->setInicio(NULL);
-        this->tamanho = grauGrafo;
-        Vertice *vertice = new Vertice();
-
-        vertice->setNome(1);
-        vertice->setProximo(NULL);
-        vertice->setGrau(0);
-        this->inicio = vertice;
-
-        for (int i = 2; i <= this->tamanho; ++i) {
-
-            Vertice *aux = new Vertice();
-            aux->setGrau(0);
-            aux->setNome(i);
-            aux->setNeighbor(NULL);
-            vertice->setProximo(aux);
-            vertice = aux;
-        }
-
+        //primeira linha indica que o grafo tem 5 vértices
+        fscanf(arq,"%d", &ordemGrafo);
+        this->inicializaGrafo(ordemGrafo);
 
     while( (fscanf(arq,"%d %d %d\n", &v1, &v2, &p))!=EOF ) {
 
@@ -58,105 +40,60 @@ void Grafo::lerArquivo(string nomeArquivoEntrada) {
 
 }
 
+void Grafo::inicializaGrafo(int ordem){
+    this->setInicio(NULL);
+    this->ordem = ordem;
+
+    Vertice *v = new Vertice(1);
+    this->setInicio(v);
+    for(int i=2; i<=ordem; i++){
+        Vertice *aux = new Vertice(i);
+        v->setProximo(aux);
+        v = v->getProximo();
+    }
+}
+
+
+
+/// Adiciona vertice ao Grafo, buscando se já existe ou não.
+/// \param vertice1 origem
+/// \param vertice2 destino
+/// \param peso peso da aresta
 void Grafo::addVertice(int vertice1, int vertice2,int peso) {
-    Vertice * vert1 = new Vertice();
-    Vertice * vert2 = new Vertice();
-    Aresta *aresta = new Aresta();
-    bool existe =false;
+    Vertice *v1 = addVertice(vertice1);
+    Vertice *v2 = addVertice(vertice2);
 
-    if(this->inicio == NULL)
-    {
-        this->inicio = vert1;
+    v1->setListaAresta(new Aresta(vertice1,vertice2,peso));
+    v2->setListaAresta(new Aresta(vertice1,vertice2,peso));
+
+}
+
+
+/// Retorna o ponteiro pro vértice ou um novo Vértice
+/// \param vertice1 identificador do vértice (nome)
+/// \return vértice
+Vertice* Grafo::addVertice(int vertice1){
+    Vertice *v = encontraVertice(vertice1);
+    if(!v){
+        v = new Vertice(vertice1);
     }
+    return v;
+}
 
-    Vertice * aux = this->inicio;
-    Vertice * vertAux = aux;
-    Vertice * verticeAux;
+/// Se existe o vértice retorna seu endereço, caso contrário retorna nulo
+/// \param vertice vertice a ser buscado
+/// \return null ou vértice.
 
-    while(aux->getNome()!= vertice1){
-        if(aux->getNome() == vertice2){
-            vert2 =aux;
-            existe = true;
-        }else if (aux->getProximo() == NULL && !existe){
-            vert2->setNome(vertice2);
-            vert2->setNeighbor(NULL);
-            vert2->setProximo(NULL);
-            this->tamanho++;
-        }
-        aux =aux->getProximo();
-        vertAux =aux;
-
-
-        if(aux->getProximo() == NULL && aux->getNome()!=vertice1){
-            aresta->setPeso(peso);
-            aresta->setNomeVertice(vertice2);
-            aresta->setDestino(vert2);
-            aresta->setOrigem(vert1);
-            vert1->setNome(vertice1);
-            if (existe){
-                vert1->setProximo(NULL);
-            }else
-                vert1->setProximo(vert2);
-
-            vert1->setNeighbor(aresta);
-            aux->setProximo(vert1);
-            this->tamanho++;
-
-            return;
-
-
-        }
-
+Vertice* Grafo::encontraVertice(int vertice){
+    Vertice *v = this->getInicio();
+    while(v){
+        if(v->getNome()==vertice)
+            return v;
+        else
+            v=v->getProximo();
     }
-
-    while(aux!=NULL){
-
-
-        if(aux->getNome() == vertice2){
-            vert2 =aux;
-            existe = true;
-        }
-        verticeAux = aux;
-        aux =aux->getProximo();
-    }
-    if (aux == NULL && !existe){
-        vert2->setNome(vertice2);
-        vert2->setNeighbor(NULL);
-        vert2->setProximo(NULL);
-        verticeAux->setProximo(vert2);
-        this->tamanho++;
-    }
-
-    if(vertAux->getNeighbor() == NULL){
-        aresta->setNomeVertice(vertice2);
-        aresta->setPeso(peso);
-        aresta->setVizinho(NULL);
-        aresta->setOrigem(vertAux);
-        aresta->setDestino(vert2);
-        vertAux->setNeighbor(aresta);
-    }else{
-        Aresta *arestaAux =vertAux->getNeighbor();
-
-        while(arestaAux->getVizinho()!=NULL){
-            arestaAux = arestaAux->getVizinho();
-        }
-        aresta->setNomeVertice(vertice2);
-        aresta->setPeso(peso);
-        aresta->setVizinho(NULL);
-        aresta->setOrigem(vertAux);
-        aresta->setDestino(vert2);
-
-        arestaAux->setVizinho(aresta);
-
-
-    }
-
-    
-    }
-
-
-
-
+    return NULL;
+}
 
 Vertice *Grafo::getInicio() const {
     return inicio;
@@ -166,19 +103,33 @@ void Grafo::setInicio(Vertice *inicio) {
     Grafo::inicio = inicio;
 }
 
-int Grafo::getTamanho() const {
-    return tamanho;
+int Grafo::getOrdem() const {
+    return ordem;
 }
 
-void Grafo::setTamanho(int tamanho) {
-    Grafo::tamanho = tamanho;
+void Grafo::setOrdem(int tamanho) {
+    Grafo::ordem = tamanho;
 }
 
-void getline(char *str)
-{
-    scanf("%[^\n]s", str);
-    fflush(stdin);
+int Grafo::getGrau() {
+    int maxGrau =0;
+    Vertice *aux = this->getInicio();
+    while(aux){
+        if(aux->getGrau()>maxGrau){
+            maxGrau=aux->getGrau();
+        }
+        aux= aux->getProximo();
+    }
+    return maxGrau;
 }
 
+int Grafo::getGrau(int vertice) {
+    Vertice *aux = encontraVertice(vertice);
+    if(aux){
+        return aux->getGrau();
+    }
+    else
+        return NULL;
 
+}
 

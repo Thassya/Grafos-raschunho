@@ -5,42 +5,24 @@
 #include "Aresta.h"
 #include "Vertice.h"
 
-int Aresta::getPeso() const {
-    return peso;
+Aresta::Aresta(){
+
 }
 
-void Aresta::setPeso(int peso) {
-    Aresta::peso = peso;
+Aresta::Aresta(int origem, int destino, int peso) {
+    this->origem = origem;
+    this->destino = destino;
+    this->peso = peso;
 }
 
-int Aresta::getNomeVertice() const {
-    return nomeVertice;
+Aresta *Aresta::getVizinho(){
+    return this->vizinho;
 }
 
-void Aresta::setNomeVertice(int nomeVertice) {
-    Aresta::nomeVertice = nomeVertice;
+void Aresta::setAresta(Aresta *a) {
+    if(!vizinho){ vizinho=new Aresta();}
+    Aresta::vizinho = a;
 }
 
-Vertice* Aresta::getDestino() const {
-    return destino;
-}
-
-void Aresta::setDestino(Vertice *destino) {
-    Aresta::destino = destino;
-}
-
-Vertice *Aresta::getOrigem() const {
-    return origem;
-}
-
-void Aresta::setOrigem(Vertice *origem) {
-    Aresta::origem = origem;
-}
-
-Aresta *Aresta::getVizinho() const {
-    return vizinho;
-}
-
-void Aresta::setVizinho(Aresta *vizinho) {
-    Aresta::vizinho = vizinho;
+Aresta::~Aresta() {
 }

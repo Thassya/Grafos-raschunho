@@ -17,30 +17,26 @@ private:
     int peso;
     int grau;
     Vertice* proximo;
-    Aresta* neighbor;
+    Aresta* listaAresta;
 
 public:
-
+    Vertice();
+    Vertice(int nome){this->nome=nome;this->peso=0; this->grau=0;};
     int getNome() const;
-
     void setNome(int nome);
-
     int getPeso() const;
-
     void setPeso(int peso);
-
     int getGrau() const;
-
     void setGrau(int grau);
-
     Vertice* getProximo() const;
-
     void setProximo(Vertice* proximo);
+    Aresta* getListaAresta() const;
+    void setListaAresta(Aresta *listaAresta);
+    void incrementaGrau();
 
-    Aresta* getNeighbor() const;
-
-    void setNeighbor(Aresta *neighbor);
-
+    void setAresta(int peso);
+    void addAresta(int vertice1, int vertice2);
+    Aresta* encontraProxima(Aresta *aresta);
 
 };
 

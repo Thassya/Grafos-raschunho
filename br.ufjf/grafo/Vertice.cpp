@@ -2,8 +2,14 @@
 // Created by rodolpho on 21/05/18.
 //
 
+#include <array>
 #include "Vertice.h"
 
+using namespace std;
+
+Vertice::Vertice(){
+
+}
 int Vertice::getNome() const {
     return nome;
 }
@@ -28,6 +34,10 @@ void Vertice::setGrau(int grau) {
     Vertice::grau = grau;
 }
 
+void Vertice::incrementaGrau(){
+    Vertice::grau++;
+}
+
 Vertice *Vertice::getProximo() const {
     return proximo;
 }
@@ -36,10 +46,28 @@ void Vertice::setProximo(Vertice *proximo) {
     Vertice::proximo = proximo;
 }
 
-Aresta *Vertice::getNeighbor() const {
-    return neighbor;
+Aresta *Vertice::getListaAresta() const {
+    return listaAresta;
 }
 
-void Vertice::setNeighbor(Aresta *neighbor) {
-    Vertice::neighbor = neighbor;
+void Vertice::setListaAresta(Aresta *neighbor) {
+   if(!getListaAresta()){
+       listaAresta = neighbor;
+   }
+    else{
+       Aresta *aux = encontraProxima(getListaAresta());
+       aux->setAresta(neighbor);
+
+   }
+
+    incrementaGrau();
+
+}
+
+Aresta *Vertice::encontraProxima(Aresta *aresta){
+    Aresta *aux = aresta;
+    while(aux->getVizinho()){
+        aux = aux->getVizinho();
+    }
+    return aux;
 }
